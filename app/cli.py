@@ -18,6 +18,8 @@ def initialize():
         db.refresh(bob) # Update the user (we use this to get the ID from the db)
         print("Database Initialized")
 
+
+
 @cli.command()
 def get_user(username:str):
     # The code for task 5.1 goes here. Once implemented, remove the line below that says "pass"

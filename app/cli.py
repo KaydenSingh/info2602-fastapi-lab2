@@ -43,12 +43,11 @@ def get_all_users():
 @cli.command()
 def change_email(username: str, new_email:str):
     with get_session() as db: # Get a connection to the database
-        user = db.exec(select(User).where(User.username == username)).first
+        user = db.exec(select(User).where(User.username == username)).first()
         if not user:
             print(f'{username} not found! Unable to update email.')
             return
         user.email = new_email
-        db.add(user)
         db.commit()
         print(f"Updated {user.username}'s email to {user.email}")
     
@@ -68,12 +67,34 @@ def create_user(username: str, email:str, password: str):
         else:
             print(newuser) # print the newly created user
 
+            #to use you run( python app/cli.py create-user bobby bob@mail2.com pass ) to use this command
+
 
 
 @cli.command()
 def delete_user(username: str):
-    # The code for task 8 goes here. Once implemented, remove the line below that says "pass"
-    pass
+    with get_session() as db:
+        user = db.exec(select(User).where(User.username == username)).first()
+        if not user:
+            print(f'{username} not found! Unable to delete user.')
+            return
+        db.delete(user)
+        db.commit()
+        print(f'{username} deleted')
+
+
+@cli.command()
+def get_user_par(username:str):
+
+    with get_session() as db:
+        all_par_users = db.exec(select(User).where(User.username.like(f'%{username}%'))).all()
+        if not all_par_users:
+            print("No users found")
+        else:
+            for user in all_par_users:
+                print(user)
+
+
 
 
 if __name__ == "__main__":
